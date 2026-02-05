@@ -1,0 +1,703 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Rich warm palette */
+  --copper-50: #fef7f4;
+  --copper-100: #fceee6;
+  --copper-200: #f8d4c0;
+  --copper-300: #f2b08d;
+  --copper-400: #e88552;
+  --copper-500: #dc6b35;
+  --copper-600: #c4522a;
+  --copper-700: #a24024;
+  --copper-800: #853623;
+  --copper-900: #6e2f21;
+  
+  --sage-50: #f4f7f1;
+  --sage-100: #e5ead9;
+  --sage-200: #cdd8b7;
+  --sage-300: #aebf8c;
+  --sage-400: #91a566;
+  --sage-500: #748a4a;
+  --sage-600: #5a6d38;
+  --sage-700: #46552e;
+  --sage-800: #3a4528;
+  --sage-900: #323b25;
+  
+  --cream: #fffdf9;
+  --cream-warm: #fef9f2;
+  --charcoal: #1a1815;
+  --charcoal-soft: #2d2a26;
+  
+  /* Glass effects */
+  --glass-bg: rgba(255, 253, 249, 0.7);
+  --glass-border: rgba(220, 107, 53, 0.12);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: var(--cream);
+  min-height: 100vh;
+  color: var(--charcoal);
+}
+
+/* Animated background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(232, 133, 82, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(174, 191, 140, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 10% 80%, rgba(248, 212, 192, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+h1, h2, h3, .serif {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+}
+
+/* ============================================
+   Glass Morphism Components
+   ============================================ */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 4px 24px -1px rgba(0, 0, 0, 0.06),
+    0 2px 8px -1px rgba(0, 0, 0, 0.04);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 20px 40px -8px rgba(220, 107, 53, 0.15),
+    0 8px 16px -4px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================
+   Voice Recording Animations
+   ============================================ */
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 0.5; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 20px rgba(220, 107, 53, 0.4),
+      0 0 40px rgba(220, 107, 53, 0.2),
+      0 0 60px rgba(220, 107, 53, 0.1);
+  }
+  50% { 
+    box-shadow: 
+      0 0 30px rgba(220, 107, 53, 0.6),
+      0 0 60px rgba(220, 107, 53, 0.3),
+      0 0 90px rgba(220, 107, 53, 0.15);
+  }
+}
+
+@keyframes wave {
+  0%, 100% { height: 12px; opacity: 0.4; }
+  50% { height: 32px; opacity: 1; }
+}
+
+@keyframes equalizer {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.voice-wave {
+  animation: wave 0.6s ease-in-out infinite;
+  background: linear-gradient(180deg, var(--copper-400) 0%, var(--copper-600) 100%);
+  border-radius: 4px;
+}
+
+.voice-wave:nth-child(1) { animation-delay: 0s; }
+.voice-wave:nth-child(2) { animation-delay: 0.1s; }
+.voice-wave:nth-child(3) { animation-delay: 0.2s; }
+.voice-wave:nth-child(4) { animation-delay: 0.3s; }
+.voice-wave:nth-child(5) { animation-delay: 0.4s; }
+
+/* ============================================
+   Hero Section Animations
+   ============================================ */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-8px) rotate(1deg); }
+  75% { transform: translateY(4px) rotate(-1deg); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--copper-500) 0%,
+    var(--copper-400) 25%,
+    var(--copper-300) 50%,
+    var(--copper-400) 75%,
+    var(--copper-500) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.animate-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--copper-600) 0%,
+    var(--copper-500) 25%,
+    var(--copper-400) 50%,
+    var(--copper-500) 75%,
+    var(--copper-600) 100%
+  );
+  background-size: 300% 300%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* ============================================
+   Gradient Text Effects
+   ============================================ */
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--copper-600) 0%, var(--copper-400) 50%, var(--sage-500) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, var(--copper-700) 0%, var(--copper-500) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   Card Styles & Hover Effects
+   ============================================ */
+
+.recipe-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+}
+
+.recipe-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 
+    0 24px 48px -12px rgba(220, 107, 53, 0.2),
+    0 12px 24px -8px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-card:hover img {
+  transform: scale(1.08);
+}
+
+.recipe-card img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   Upload Zone Styling
+   ============================================ */
+
+.upload-zone {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(254, 247, 244, 0.8) 0%, rgba(252, 238, 230, 0.6) 100%);
+  border: 2px dashed var(--copper-200);
+  transition: all 0.3s ease;
+}
+
+.upload-zone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(90deg, transparent 0%, rgba(220, 107, 53, 0.03) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+  pointer-events: none;
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+  background: linear-gradient(135deg, rgba(252, 238, 230, 1) 0%, rgba(248, 212, 192, 0.8) 100%);
+  border-color: var(--copper-400);
+  box-shadow: 
+    0 8px 32px -4px rgba(220, 107, 53, 0.15),
+    inset 0 0 0 1px rgba(220, 107, 53, 0.1);
+}
+
+/* ============================================
+   Button Styles
+   ============================================ */
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--copper-500) 0%, var(--copper-600) 100%);
+  color: white;
+  font-weight: 600;
+  padding: 0.875rem 1.75rem;
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 16px -4px rgba(220, 107, 53, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--copper-600) 0%, var(--copper-700) 100%);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 24px -4px rgba(220, 107, 53, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-ghost {
+  color: var(--copper-600);
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.btn-ghost:hover {
+  background: var(--copper-50);
+  color: var(--copper-700);
+}
+
+/* ============================================
+   Voice Button - Premium Feel
+   ============================================ */
+
+.voice-btn {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--copper-500) 0%, var(--copper-600) 100%);
+  box-shadow: 
+    0 8px 32px -4px rgba(220, 107, 53, 0.5),
+    0 4px 16px -2px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-btn::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--copper-400), var(--copper-600));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.voice-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 12px 40px -4px rgba(220, 107, 53, 0.6),
+    0 6px 20px -2px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.voice-btn:hover::before {
+  opacity: 0.3;
+}
+
+.voice-btn.recording {
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.voice-btn.recording::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid var(--copper-400);
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+/* ============================================
+   Ingredient Tags
+   ============================================ */
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.ingredient-tag {
+  animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: linear-gradient(135deg, white 0%, var(--copper-50) 100%);
+  border: 1px solid var(--copper-100);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--charcoal-soft);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
+}
+
+.ingredient-tag:hover {
+  background: linear-gradient(135deg, var(--copper-50) 0%, var(--copper-100) 100%);
+  border-color: var(--copper-200);
+  box-shadow: 0 4px 12px -2px rgba(220, 107, 53, 0.15);
+}
+
+.ingredient-tag button {
+  color: var(--copper-400);
+  transition: color 0.2s ease;
+}
+
+.ingredient-tag button:hover {
+  color: var(--copper-600);
+}
+
+/* ============================================
+   Chat Messages
+   ============================================ */
+
+.chat-message {
+  animation: slide-up 0.3s ease-out;
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-user {
+  background: linear-gradient(135deg, var(--copper-500) 0%, var(--copper-600) 100%);
+  color: white;
+  border-radius: 1.25rem 1.25rem 0.375rem 1.25rem;
+}
+
+.chat-assistant {
+  background: white;
+  border: 1px solid var(--copper-100);
+  color: var(--charcoal);
+  border-radius: 1.25rem 1.25rem 1.25rem 0.375rem;
+  box-shadow: 0 2px 12px -2px rgba(0, 0, 0, 0.06);
+}
+
+/* ============================================
+   Scrollbar Styling
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--copper-200) 0%, var(--copper-300) 100%);
+  border-radius: 99px;
+  border: 2px solid var(--cream);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--copper-300) 0%, var(--copper-400) 100%);
+}
+
+/* ============================================
+   Tab Navigation
+   ============================================ */
+
+.tab-btn {
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.tab-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--copper-500), var(--copper-600));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.tab-btn.active {
+  color: white;
+  box-shadow: 0 4px 16px -4px rgba(220, 107, 53, 0.4);
+}
+
+.tab-btn.active::before {
+  opacity: 1;
+}
+
+.tab-btn:not(.active) {
+  color: var(--copper-600);
+}
+
+.tab-btn:not(.active):hover {
+  background: var(--copper-50);
+}
+
+/* ============================================
+   Input Fields
+   ============================================ */
+
+.input-field {
+  background: white;
+  border: 1px solid var(--copper-100);
+  border-radius: 0.875rem;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--copper-400);
+  box-shadow: 
+    0 0 0 3px rgba(220, 107, 53, 0.1),
+    0 4px 12px -2px rgba(0, 0, 0, 0.08);
+}
+
+.input-field::placeholder {
+  color: var(--copper-300);
+}
+
+/* ============================================
+   Loading States
+   ============================================ */
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes typing-dot {
+  0%, 60%, 100% { 
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% { 
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+.typing-indicator span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--copper-400);
+  border-radius: 50%;
+  animation: typing-dot 1.4s ease-in-out infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ============================================
+   Page Transitions
+   ============================================ */
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: fade-in-up 0.4s ease-out;
+}
+
+/* Staggered animations for children */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+
+/* ============================================
+   Cookbook Grid
+   ============================================ */
+
+.cookbook-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 1280px) {
+  .cookbook-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ============================================
+   Decorative Elements
+   ============================================ */
+
+.decorative-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.blob-1 {
+  width: 400px;
+  height: 400px;
+  background: rgba(232, 133, 82, 0.15);
+  top: -100px;
+  right: -100px;
+  animation: float 8s ease-in-out infinite;
+}
+
+.blob-2 {
+  width: 300px;
+  height: 300px;
+  background: rgba(174, 191, 140, 0.12);
+  bottom: -50px;
+  left: -50px;
+  animation: float-delayed 10s ease-in-out infinite;
+}
+
+/* ============================================
+   Select Dropdown
+   ============================================ */
+
+.select-field {
+  appearance: none;
+  background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23c4522a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+  background-size: 18px;
+  border: 1px solid var(--copper-100);
+  border-radius: 0.75rem;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.select-field:hover {
+  border-color: var(--copper-200);
+}
+
+.select-field:focus {
+  outline: none;
+  border-color: var(--copper-400);
+  box-shadow: 0 0 0 3px rgba(220, 107, 53, 0.1);
+}

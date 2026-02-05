@@ -1,0 +1,38 @@
+# =============================================================================
+# PHASE 1: Web Framework
+# =============================================================================
+fastapi>=0.115.0          # Modern, fast web framework for building APIs
+uvicorn>=0.30.0           # ASGI server to run FastAPI
+pydantic>=2.10.0          # Data validation using Python type hints
+python-multipart>=0.0.9   # For handling file uploads (images later)
+
+# =============================================================================
+# PHASE 2: Database
+# =============================================================================
+# SQLAlchemy: The most popular Python ORM (Object-Relational Mapper)
+# An ORM lets you interact with databases using Python classes instead of raw SQL
+sqlalchemy>=2.0.25
+
+# psycopg2: PostgreSQL adapter for Python
+# This is what actually talks to PostgreSQL under the hood
+psycopg2-binary>=2.9.9
+
+# Alembic: Database migration tool
+# Migrations are like "version control for your database schema"
+# When you change your models, Alembic generates SQL to update the database
+alembic>=1.13.1
+
+# python-dotenv: Load environment variables from .env file
+# Keeps secrets (like database passwords) out of your code
+python-dotenv>=1.0.0
+
+# =============================================================================
+# PHASE 3: LLM Integration
+# =============================================================================
+openai>=1.12.0            # OpenAI API client for GPT-4
+
+# =============================================================================
+# PHASE 4: RAG (Coming Soon)
+# =============================================================================
+# chromadb>=0.4.22
+# sentence-transformers>=2.3.1
