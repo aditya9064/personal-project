@@ -271,6 +271,66 @@ async def chat_with_chef(
 
 
 # =============================================================================
+# Nutrition Estimation
+# =============================================================================
+
+async def estimate_nutrition(
+    recipe_name: str,
+    ingredients: list[str],
+    servings: int = 4
+) -> dict:
+    """
+    Get AI-powered nutrition estimates for a recipe.
+    
+    Returns estimated macros per serving.
+    """
+    
+    ingredients_str = ", ".join(ingredients) if ingredients else "not specified"
+    
+    prompt = f"""Estimate the nutritional information per serving for this recipe:
+
+Recipe: {recipe_name}
+Ingredients: {ingredients_str}
+Servings: {servings}
+
+Provide reasonable estimates based on typical ingredient amounts. 
+Be conservative with estimates. These are for informational purposes only.
+
+Format as JSON:
+{{
+    "per_serving": {{
+        "calories": 350,
+        "protein_g": 25,
+        "carbs_g": 35,
+        "fat_g": 12,
+        "fiber_g": 4,
+        "sodium_mg": 450
+    }},
+    "health_notes": ["Note about the dish's nutritional profile"],
+    "disclaimer": "These are estimates based on typical ingredients and may vary."
+}}
+"""
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a nutrition expert. Provide reasonable estimates for recipe nutrition based on typical ingredient amounts. Always include a disclaimer that these are estimates."},
+                {"role": "user", "content": prompt}
+            ],
+            response_format={"type": "json_object"},
+            temperature=0.3,  # Lower temperature for more consistent estimates
+            max_tokens=500,
+        )
+        
+        result = json.loads(response.choices[0].message.content)
+        return {"success": True, "data": result}
+        
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+# =============================================================================
 # Utility Functions
 # =============================================================================
 
@@ -297,4 +357,8 @@ async def test_connection() -> dict:
         }
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+
+
+
 

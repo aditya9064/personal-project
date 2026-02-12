@@ -66,15 +66,21 @@ async def transcribe_audio(audio_data: bytes, audio_format: str = "webm") -> dic
         response = client.audio.transcriptions.create(
             model="whisper-1",
             file=audio_file,
-            response_format="text"
+            response_format="text",
+            language="en",  # Hint for English - improves accuracy
+            prompt="This is a cooking assistant. The user might say things like: next step, how much salt, what's the temperature, go back, help me."  # Context prompt for better accuracy
         )
+        
+        transcribed_text = response.strip()
+        print(f"[Transcription] {transcribed_text}")  # Log for debugging
         
         return {
             "success": True,
-            "text": response.strip(),
+            "text": transcribed_text,
         }
         
     except Exception as e:
+        print(f"[Transcription Error] {str(e)}")
         return {
             "success": False,
             "error": str(e)

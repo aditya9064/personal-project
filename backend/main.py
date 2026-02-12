@@ -32,6 +32,7 @@ import llm_service
 import rag_service
 import vision_service
 import voice_service
+import live_cook_service
 
 # =============================================================================
 # Create FastAPI Application
@@ -839,6 +840,109 @@ async def list_ingredients(
 
 
 # =============================================================================
+# Nutrition Estimation Endpoint
+# =============================================================================
+
+class NutritionRequest(BaseModel):
+    """Request for nutrition estimation."""
+    recipe_name: str
+    ingredients: list[str]
+    servings: int = 4
+
+
+class NutritionResponse(BaseModel):
+    """Nutrition estimation response."""
+    success: bool
+    per_serving: dict | None = None
+    health_notes: list[str] = []
+    disclaimer: str = ""
+    error: str | None = None
+
+
+@app.post("/api/nutrition/estimate", response_model=NutritionResponse)
+async def estimate_recipe_nutrition(request: NutritionRequest):
+    """
+    🥗 Estimate Nutritional Information
+    
+    Uses AI to estimate macros and nutrition for a recipe based on its ingredients.
+    These are estimates only and should not be used for medical purposes.
+    """
+    
+    if not settings.OPENAI_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="AI service not configured"
+        )
+    
+    result = await llm_service.estimate_nutrition(
+        recipe_name=request.recipe_name,
+        ingredients=request.ingredients,
+        servings=request.servings
+    )
+    
+    if not result["success"]:
+        return NutritionResponse(
+            success=False,
+            error=result.get("error", "Failed to estimate nutrition")
+        )
+    
+    data = result["data"]
+    
+    return NutritionResponse(
+        success=True,
+        per_serving=data.get("per_serving", {}),
+        health_notes=data.get("health_notes", []),
+        disclaimer=data.get("disclaimer", "Estimates only. Consult a nutritionist for accurate values.")
+    )
+
+
+@app.get("/api/recipes/{recipe_id}/nutrition")
+async def get_recipe_nutrition(recipe_id: int, db: Session = Depends(get_db)):
+    """
+    Get estimated nutrition for a specific recipe from the database.
+    """
+    
+    if not settings.OPENAI_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="AI service not configured"
+        )
+    
+    # Get the recipe
+    recipe = db.query(Recipe).filter(Recipe.id == recipe_id).first()
+    
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    
+    # Get ingredient names
+    ingredient_names = [ing.name for ing in recipe.ingredients]
+    
+    # Get nutrition estimate
+    result = await llm_service.estimate_nutrition(
+        recipe_name=recipe.name,
+        ingredients=ingredient_names,
+        servings=recipe.servings or 4
+    )
+    
+    if not result["success"]:
+        raise HTTPException(
+            status_code=500,
+            detail=result.get("error", "Failed to estimate nutrition")
+        )
+    
+    data = result["data"]
+    
+    return {
+        "recipe_id": recipe_id,
+        "recipe_name": recipe.name,
+        "servings": recipe.servings or 4,
+        "per_serving": data.get("per_serving", {}),
+        "health_notes": data.get("health_notes", []),
+        "disclaimer": data.get("disclaimer", "Estimates only.")
+    }
+
+
+# =============================================================================
 # Voice Endpoints (Phase 6)
 # =============================================================================
 
@@ -918,8 +1022,14 @@ async def transcribe_audio(file: UploadFile = File(...)):
     }
 
 
+class SpeakRequest(BaseModel):
+    """Request for text-to-speech."""
+    text: str
+    voice: str = "nova"
+
+
 @app.post("/api/voice/speak")
-async def text_to_speech(text: str, voice: str = "nova"):
+async def text_to_speech(request: SpeakRequest):
     """
     🔊 Convert text to speech using OpenAI TTS.
     
@@ -938,7 +1048,7 @@ async def text_to_speech(text: str, voice: str = "nova"):
             detail="Voice service not configured"
         )
     
-    result = await voice_service.generate_speech(text, voice)
+    result = await voice_service.generate_speech(request.text, request.voice)
     
     if not result["success"]:
         raise HTTPException(
@@ -1136,6 +1246,213 @@ async def voice_cooking_step(request: CookingStepRequest):
         text_response=text_response,
         audio_base64=audio_base64,
     )
+
+
+# =============================================================================
+# Live Cooking Endpoints (Real-time AI Camera Assistance)
+# =============================================================================
+
+class LiveCookAnalyzeRequest(BaseModel):
+    """Request for live cooking frame analysis."""
+    image_base64: str
+    recipe_name: str = "Unknown Recipe"
+    current_step: int = 1
+    current_instruction: str = ""
+    previous_context: dict = {}
+    detected_ingredients: list[str] = []
+
+
+class LiveCookAnalyzeResponse(BaseModel):
+    """Response from live cooking analysis."""
+    success: bool
+    detected_items: list[str] = []
+    current_action: str | None = None
+    guidance: str | None = None
+    speak: bool = False
+    warning: str | None = None
+    tip: str | None = None
+    step_complete_suggestion: bool = False
+    next_step_preview: str | None = None
+    timing_advice: str | None = None
+    ingredient_amounts: str | None = None
+    error: str | None = None
+
+
+class LiveCookVoiceCommandRequest(BaseModel):
+    """Request for voice command during live cooking."""
+    command: str
+    recipe_name: str = "Unknown Recipe"
+    current_step: int = 1
+    current_instruction: str = ""
+    detected_ingredients: list[str] = []
+    last_analysis: dict = {}
+
+
+class LiveCookVoiceResponse(BaseModel):
+    """Response from voice command during live cooking."""
+    success: bool
+    response: str
+    action: str | None = None
+    additional_info: str | None = None
+    error: str | None = None
+
+
+@app.post("/api/live-cook/analyze", response_model=LiveCookAnalyzeResponse)
+async def analyze_live_cooking_frame(request: LiveCookAnalyzeRequest):
+    """
+    🎥 Real-time Cooking Frame Analysis
+    
+    Analyzes a camera frame during live cooking and provides:
+    - What's visible in the frame
+    - Specific cooking guidance for this moment
+    - Timing advice and warnings
+    - Whether the current step appears complete
+    
+    Optimized for speed (~1-2 second response time) to enable
+    near real-time cooking assistance.
+    """
+    
+    if not settings.OPENAI_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="AI service not configured"
+        )
+    
+    if not request.image_base64:
+        raise HTTPException(
+            status_code=400,
+            detail="No image data provided"
+        )
+    
+    result = await live_cook_service.analyze_cooking_frame(
+        image_base64=request.image_base64,
+        recipe_name=request.recipe_name,
+        current_step=request.current_step,
+        current_instruction=request.current_instruction,
+        previous_context=request.previous_context,
+        detected_ingredients=request.detected_ingredients,
+    )
+    
+    if not result.get("success"):
+        return LiveCookAnalyzeResponse(
+            success=False,
+            error=result.get("error", "Analysis failed")
+        )
+    
+    return LiveCookAnalyzeResponse(
+        success=True,
+        detected_items=result.get("detected_items", []),
+        current_action=result.get("current_action"),
+        guidance=result.get("guidance"),
+        speak=result.get("speak", False),
+        warning=result.get("warning"),
+        tip=result.get("tip"),
+        step_complete_suggestion=result.get("step_complete_suggestion", False),
+        next_step_preview=result.get("next_step_preview"),
+        timing_advice=result.get("timing_advice"),
+        ingredient_amounts=result.get("ingredient_amounts"),
+    )
+
+
+@app.post("/api/live-cook/voice-command", response_model=LiveCookVoiceResponse)
+async def process_live_cooking_voice_command(request: LiveCookVoiceCommandRequest):
+    """
+    🎤 Process Voice Command During Live Cooking
+    
+    Handles voice commands while the user is actively cooking:
+    - "How much salt?" - Ingredient amount queries
+    - "How long should I stir?" - Timing questions
+    - "What's next?" - Step navigation
+    - "Is this done?" - Completion checks
+    - General cooking questions
+    
+    Returns a spoken response and optional actions.
+    """
+    
+    if not settings.OPENAI_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="AI service not configured"
+        )
+    
+    if not request.command:
+        raise HTTPException(
+            status_code=400,
+            detail="No command provided"
+        )
+    
+    result = await live_cook_service.process_voice_command(
+        command=request.command,
+        recipe_name=request.recipe_name,
+        current_step=request.current_step,
+        current_instruction=request.current_instruction,
+        detected_ingredients=request.detected_ingredients,
+        last_analysis=request.last_analysis,
+    )
+    
+    return LiveCookVoiceResponse(
+        success=result.get("success", True),
+        response=result.get("response", "I'm here to help!"),
+        action=result.get("action"),
+        additional_info=result.get("additional_info"),
+        error=result.get("error"),
+    )
+
+
+class IngredientGuidanceRequest(BaseModel):
+    """Request for ingredient amount guidance."""
+    ingredient: str
+    recipe_name: str
+    recipe_ingredients: list[dict] = []
+
+
+@app.post("/api/live-cook/ingredient-help")
+async def get_ingredient_help(request: IngredientGuidanceRequest):
+    """
+    🧂 Get Specific Ingredient Guidance
+    
+    Ask about how much of a specific ingredient to use.
+    "How much garlic?" -> "Use 3 cloves, minced (about 1 tablespoon)"
+    """
+    
+    if not settings.OPENAI_API_KEY:
+        raise HTTPException(status_code=503, detail="AI service not configured")
+    
+    result = await live_cook_service.get_ingredient_guidance(
+        ingredient=request.ingredient,
+        recipe_name=request.recipe_name,
+        recipe_ingredients=request.recipe_ingredients,
+    )
+    
+    return result
+
+
+class TimingGuidanceRequest(BaseModel):
+    """Request for timing guidance."""
+    action: str
+    current_instruction: str
+    visual_context: str | None = None
+
+
+@app.post("/api/live-cook/timing-help")
+async def get_timing_help(request: TimingGuidanceRequest):
+    """
+    ⏱️ Get Specific Timing Guidance
+    
+    Ask about how long to perform a cooking action.
+    "How long should I sauté the onions?" -> "Sauté for 5-7 minutes until translucent and slightly golden"
+    """
+    
+    if not settings.OPENAI_API_KEY:
+        raise HTTPException(status_code=503, detail="AI service not configured")
+    
+    result = await live_cook_service.get_timing_guidance(
+        action=request.action,
+        current_instruction=request.current_instruction,
+        visual_context=request.visual_context,
+    )
+    
+    return result
 
 
 # =============================================================================

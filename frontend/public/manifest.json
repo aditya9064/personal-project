@@ -1,0 +1,53 @@
+{
+  "name": "Pantry Chef AI",
+  "short_name": "PantryChef",
+  "description": "AI-powered cooking assistant with live camera guidance",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffdf9",
+  "theme_color": "#dc6b35",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["food", "lifestyle", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Home Screen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start Cooking",
+      "short_name": "Cook",
+      "description": "Start live cooking assistant",
+      "url": "/?mode=live-cook",
+      "icons": [{ "src": "/icons/cook-icon.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Scan Ingredients",
+      "short_name": "Scan",
+      "description": "Scan your kitchen",
+      "url": "/?mode=scan",
+      "icons": [{ "src": "/icons/scan-icon.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
+

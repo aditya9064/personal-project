@@ -38,6 +38,17 @@
   --glass-border: rgba(220, 107, 53, 0.12);
 }
 
+/* Dark mode overrides */
+.dark {
+  --cream: #0f0e0d;
+  --cream-warm: #141210;
+  --charcoal: #f5f3f0;
+  --charcoal-soft: #e8e4df;
+  
+  --glass-bg: rgba(20, 18, 16, 0.85);
+  --glass-border: rgba(220, 107, 53, 0.2);
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -47,6 +58,7 @@ body {
   background: var(--cream);
   min-height: 100vh;
   color: var(--charcoal);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Animated background */
@@ -63,6 +75,13 @@ body::before {
     radial-gradient(ellipse 50% 60% at 10% 80%, rgba(248, 212, 192, 0.15) 0%, transparent 50%);
   pointer-events: none;
   z-index: -1;
+}
+
+.dark body::before {
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(220, 107, 53, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(116, 138, 74, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 10% 80%, rgba(133, 54, 35, 0.1) 0%, transparent 50%);
 }
 
 h1, h2, h3, .serif {
@@ -91,11 +110,26 @@ h1, h2, h3, .serif {
     0 2px 8px -1px rgba(0, 0, 0, 0.04);
 }
 
+.dark .glass-card {
+  background: rgba(20, 18, 16, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 4px 24px -1px rgba(0, 0, 0, 0.3),
+    0 2px 8px -1px rgba(0, 0, 0, 0.2);
+}
+
 .glass-card:hover {
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 
     0 20px 40px -8px rgba(220, 107, 53, 0.15),
     0 8px 16px -4px rgba(0, 0, 0, 0.08);
+}
+
+.dark .glass-card:hover {
+  background: rgba(30, 28, 26, 0.95);
+  box-shadow: 
+    0 20px 40px -8px rgba(220, 107, 53, 0.2),
+    0 8px 16px -4px rgba(0, 0, 0, 0.3);
 }
 
 /* ============================================
@@ -234,6 +268,13 @@ h1, h2, h3, .serif {
   background-clip: text;
 }
 
+.dark .gradient-text-warm {
+  background: linear-gradient(135deg, var(--copper-400) 0%, var(--copper-300) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* ============================================
    Card Styles & Hover Effects
    ============================================ */
@@ -248,6 +289,12 @@ h1, h2, h3, .serif {
   box-shadow: 
     0 24px 48px -12px rgba(220, 107, 53, 0.2),
     0 12px 24px -8px rgba(0, 0, 0, 0.1);
+}
+
+.dark .recipe-card:hover {
+  box-shadow: 
+    0 24px 48px -12px rgba(220, 107, 53, 0.3),
+    0 12px 24px -8px rgba(0, 0, 0, 0.4);
 }
 
 .recipe-card:hover img {
@@ -270,6 +317,11 @@ h1, h2, h3, .serif {
   transition: all 0.3s ease;
 }
 
+.dark .upload-zone {
+  background: linear-gradient(135deg, rgba(30, 28, 26, 0.8) 0%, rgba(40, 35, 30, 0.6) 100%);
+  border: 2px dashed var(--copper-700);
+}
+
 .upload-zone::before {
   content: '';
   position: absolute;
@@ -288,6 +340,12 @@ h1, h2, h3, .serif {
   box-shadow: 
     0 8px 32px -4px rgba(220, 107, 53, 0.15),
     inset 0 0 0 1px rgba(220, 107, 53, 0.1);
+}
+
+.dark .upload-zone:hover,
+.dark .upload-zone.dragover {
+  background: linear-gradient(135deg, rgba(40, 35, 30, 1) 0%, rgba(50, 40, 35, 0.8) 100%);
+  border-color: var(--copper-500);
 }
 
 /* ============================================
@@ -318,6 +376,12 @@ h1, h2, h3, .serif {
   transform: translateY(0);
 }
 
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .btn-ghost {
   color: var(--copper-600);
   font-weight: 500;
@@ -327,9 +391,18 @@ h1, h2, h3, .serif {
   background: transparent;
 }
 
+.dark .btn-ghost {
+  color: var(--copper-400);
+}
+
 .btn-ghost:hover {
   background: var(--copper-50);
   color: var(--copper-700);
+}
+
+.dark .btn-ghost:hover {
+  background: rgba(220, 107, 53, 0.1);
+  color: var(--copper-300);
 }
 
 /* ============================================
@@ -425,10 +498,21 @@ h1, h2, h3, .serif {
   box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
 }
 
+.dark .ingredient-tag {
+  background: linear-gradient(135deg, rgba(30, 28, 26, 1) 0%, rgba(40, 35, 30, 1) 100%);
+  border: 1px solid var(--copper-800);
+  color: var(--charcoal);
+}
+
 .ingredient-tag:hover {
   background: linear-gradient(135deg, var(--copper-50) 0%, var(--copper-100) 100%);
   border-color: var(--copper-200);
   box-shadow: 0 4px 12px -2px rgba(220, 107, 53, 0.15);
+}
+
+.dark .ingredient-tag:hover {
+  background: linear-gradient(135deg, rgba(40, 35, 30, 1) 0%, rgba(50, 40, 35, 1) 100%);
+  border-color: var(--copper-700);
 }
 
 .ingredient-tag button {
@@ -473,6 +557,11 @@ h1, h2, h3, .serif {
   box-shadow: 0 2px 12px -2px rgba(0, 0, 0, 0.06);
 }
 
+.dark .chat-assistant {
+  background: var(--charcoal-soft);
+  border: 1px solid var(--copper-800);
+}
+
 /* ============================================
    Scrollbar Styling
    ============================================ */
@@ -489,6 +578,11 @@ h1, h2, h3, .serif {
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, var(--copper-200) 0%, var(--copper-300) 100%);
   border-radius: 99px;
+  border: 2px solid var(--cream);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--copper-700) 0%, var(--copper-800) 100%);
   border: 2px solid var(--cream);
 }
 
@@ -533,8 +627,38 @@ h1, h2, h3, .serif {
   color: var(--copper-600);
 }
 
+.dark .tab-btn:not(.active) {
+  color: var(--copper-400);
+}
+
 .tab-btn:not(.active):hover {
   background: var(--copper-50);
+}
+
+.dark .tab-btn:not(.active):hover {
+  background: rgba(220, 107, 53, 0.1);
+}
+
+/* Cooking mode pulse */
+.cooking-pulse {
+  position: relative;
+}
+
+.cooking-pulse::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  background: var(--sage-500);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
 }
 
 /* ============================================
@@ -549,6 +673,13 @@ h1, h2, h3, .serif {
   font-size: 0.95rem;
   transition: all 0.2s ease;
   box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+  color: var(--charcoal);
+}
+
+.dark .input-field {
+  background: rgba(30, 28, 26, 1);
+  border: 1px solid var(--copper-800);
+  color: var(--charcoal);
 }
 
 .input-field:focus {
@@ -561,6 +692,10 @@ h1, h2, h3, .serif {
 
 .input-field::placeholder {
   color: var(--copper-300);
+}
+
+.dark .input-field::placeholder {
+  color: var(--copper-600);
 }
 
 /* ============================================
@@ -666,6 +801,10 @@ h1, h2, h3, .serif {
   animation: float 8s ease-in-out infinite;
 }
 
+.dark .blob-1 {
+  background: rgba(232, 133, 82, 0.08);
+}
+
 .blob-2 {
   width: 300px;
   height: 300px;
@@ -673,6 +812,10 @@ h1, h2, h3, .serif {
   bottom: -50px;
   left: -50px;
   animation: float-delayed 10s ease-in-out infinite;
+}
+
+.dark .blob-2 {
+  background: rgba(174, 191, 140, 0.06);
 }
 
 /* ============================================
@@ -692,12 +835,278 @@ h1, h2, h3, .serif {
   transition: all 0.2s ease;
 }
 
+.dark .select-field {
+  background-color: rgba(30, 28, 26, 1);
+  border: 1px solid var(--copper-800);
+  color: var(--charcoal);
+}
+
 .select-field:hover {
   border-color: var(--copper-200);
+}
+
+.dark .select-field:hover {
+  border-color: var(--copper-700);
 }
 
 .select-field:focus {
   outline: none;
   border-color: var(--copper-400);
   box-shadow: 0 0 0 3px rgba(220, 107, 53, 0.1);
+}
+
+/* ============================================
+   Timer Styles
+   ============================================ */
+
+@keyframes timer-flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.timer-alert {
+  animation: timer-flash 0.5s ease-in-out infinite;
+}
+
+/* ============================================
+   Line Clamp Utilities
+   ============================================ */
+
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* ============================================
+   Focus States for Accessibility
+   ============================================ */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--copper-500);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white;
+  }
+  
+  .glass,
+  .glass-card {
+    background: white;
+    backdrop-filter: none;
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}
+
+/* ============================================
+   PWA & Mobile Specific Styles
+   ============================================ */
+
+/* Safe area for notched devices */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* Prevent overscroll bounce on iOS */
+html {
+  overscroll-behavior: none;
+}
+
+/* Full-screen mode adjustments */
+@media (display-mode: standalone) {
+  body {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hide scrollbars in standalone mode */
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+  button, 
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Camera view styles */
+.camera-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.camera-overlay {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.camera-overlay > * {
+  pointer-events: auto;
+}
+
+/* Live cooking indicator pulse */
+@keyframes live-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+.live-indicator {
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+/* Scanning animation for AI analysis */
+@keyframes scan-line {
+  0% {
+    top: 0;
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.scan-animation::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--copper-400), transparent);
+  animation: scan-line 2s ease-in-out infinite;
+}
+
+/* Voice wave animation for live cooking */
+@keyframes voice-active {
+  0%, 100% { 
+    height: 16px;
+    opacity: 0.5;
+  }
+  50% { 
+    height: 40px;
+    opacity: 1;
+  }
+}
+
+.voice-active-wave {
+  animation: voice-active 0.4s ease-in-out infinite;
+}
+
+/* Detected item highlight */
+@keyframes item-detected {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.item-detected {
+  animation: item-detected 0.3s ease-out forwards;
+}
+
+/* Warning flash for cooking alerts */
+@keyframes warning-flash {
+  0%, 100% {
+    background-color: rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    background-color: rgba(245, 158, 11, 0.4);
+  }
+}
+
+.warning-flash {
+  animation: warning-flash 0.5s ease-in-out 3;
+}
+
+/* Smooth backdrop blur for mobile */
+@supports (backdrop-filter: blur(10px)) {
+  .glass,
+  .glass-card {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+}
+
+/* Fallback for devices without backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+  .glass,
+  .glass-card {
+    background: rgba(255, 253, 249, 0.95);
+  }
+  
+  .dark .glass,
+  .dark .glass-card {
+    background: rgba(20, 18, 16, 0.95);
+  }
+}
+
+/* Landscape orientation for live cooking */
+@media (orientation: landscape) and (max-height: 500px) {
+  .live-cook-step-card {
+    max-width: 50%;
+    margin-left: auto;
+  }
+  
+  .live-cook-controls {
+    flex-direction: column;
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 }
